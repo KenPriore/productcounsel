@@ -1,6 +1,6 @@
 # Deep Coverage — Product Counsel
 
-An offline, self-contained coverage diagnostic for in-house product counsel.
+An offline, self-contained coverage diagnostic for in-house product counsel. 
 
 The premise, adapted from the investment-bank coverage model: the durable value of counsel
 isn't faster work product (AI commoditizes the answers, and teams start to self-serve and route
