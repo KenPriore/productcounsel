@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deep Coverage — Product Counsel</title>
+<style>
+  :root{
+    --sp-white:#FFFFFF; --sp-black:#000000;
+    --sp-red:#FF0000; --sp-blue:#0057B8; --sp-yellow:#FFCC00;
+    --sp-grey-light:#F5F5F5; --sp-grey-mid:#E0E0E0; --sp-grey-dark:#333333;
+    --sp-font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --sp-transition:300ms ease;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--sp-white);color:var(--sp-black);
+    font-family:var(--sp-font);font-weight:300;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1120px;margin:0 auto;padding:40px 28px 64px;}
+
+  /* running header */
+  .runhead{display:flex;justify-content:space-between;align-items:baseline;
+    font-size:.7rem;font-weight:400;letter-spacing:.06em;text-transform:uppercase;
+    padding-bottom:10px;border-bottom:1px solid var(--sp-black);}
+  .runhead span:last-child{color:var(--sp-grey-dark);}
+
+  /* title block */
+  .title{margin:34px 0 6px;font-weight:900;line-height:.92;letter-spacing:-.02em;
+    font-size:clamp(2.6rem,8vw,5.2rem);}
+  .sub{font-weight:300;font-size:clamp(1rem,2.4vw,1.35rem);max-width:34ch;line-height:1.25;
+    margin:0 0 30px;}
+
+  /* layout */
+  .stage{display:grid;grid-template-columns:1.35fr 1fr;gap:0;align-items:start;}
+  @media(max-width:860px){.stage{grid-template-columns:1fr;}}
+
+  .chartcol{padding-right:24px;}
+  @media(max-width:860px){.chartcol{padding-right:0;}}
+  svg{width:100%;height:auto;display:block;}
+
+  .legend{display:flex;gap:26px;flex-wrap:wrap;margin-top:8px;
+    font-size:.78rem;font-weight:400;letter-spacing:.02em;}
+  .legend .item{display:flex;align-items:center;gap:9px;}
+  .sw{width:15px;height:15px;display:inline-block;}
+  .sw.today{background:var(--sp-grey-dark);}
+  .sw.cover{background:var(--sp-white);border:2px solid var(--sp-red);}
+  .cap{margin-top:14px;font-size:.72rem;font-weight:300;color:var(--sp-grey-dark);
+    font-style:italic;border:none;background:transparent;width:100%;font-family:var(--sp-font);
+    padding:0;}
+
+  /* controls */
+  .panel{border-left:1px solid var(--sp-black);padding:6px 0 0 24px;}
+  @media(max-width:860px){.panel{border-left:none;border-top:1px solid var(--sp-black);
+    margin-top:30px;padding:24px 0 0;}}
+  .panel h2{font-size:.7rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;
+    margin:0 0 4px;}
+  .panel .hint{font-size:.78rem;font-weight:300;color:var(--sp-grey-dark);margin:0 0 18px;line-height:1.35;}
+
+  .row{padding:13px 0;border-top:1px solid var(--sp-grey-mid);}
+  .row:first-of-type{border-top:none;}
+  .lab{display:flex;align-items:baseline;gap:8px;}
+  .num{font-weight:900;font-size:.8rem;width:1.3em;flex:none;}
+  .titin{font-weight:400;font-size:.92rem;border:none;background:transparent;
+    width:100%;font-family:var(--sp-font);padding:2px 0;color:var(--sp-black);}
+  .titin:focus{outline:none;border-bottom:1px solid var(--sp-red);}
+  .descin{font-weight:300;font-size:.75rem;color:var(--sp-grey-dark);border:none;
+    background:transparent;width:100%;font-family:var(--sp-font);padding:2px 0 6px 1.3em;}
+  .descin:focus{outline:none;border-bottom:1px solid var(--sp-red);color:var(--sp-black);}
+  .ctl{display:flex;align-items:center;gap:12px;padding-left:1.3em;}
+  input[type=range]{flex:1;accent-color:var(--sp-red);height:2px;}
+  .val{font-weight:900;font-size:.8rem;width:1.4em;text-align:right;}
+
+  .actions{margin-top:26px;display:flex;gap:14px;flex-wrap:wrap;}
+  button{font-family:var(--sp-font);font-weight:400;font-size:.72rem;letter-spacing:.06em;
+    text-transform:uppercase;background:var(--sp-black);color:var(--sp-white);border:none;
+    padding:11px 18px;cursor:pointer;transition:opacity var(--sp-transition);}
+  button:hover{opacity:.7;}
+  button.ghost{background:var(--sp-white);color:var(--sp-black);border:1px solid var(--sp-black);}
+
+  .foot{margin-top:48px;padding-top:14px;border-top:1px solid var(--sp-black);
+    font-size:.72rem;font-weight:300;color:var(--sp-grey-dark);max-width:60ch;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="runhead"><span>Coverage Diagnostic</span><span>In-House Product Counsel</span></div>
+
+  <h1 class="title">Deep<br>Coverage</h1>
+  <p class="sub">The eight things product counsel never has time to do. Rate where your time goes today. The outer ring is what coverage would deliver.</p>
+
+  <div class="stage">
+    <div class="chartcol">
+      <svg id="radar" viewBox="0 0 1000 720" role="img" aria-label="Coverage radar chart"></svg>
+      <div class="legend">
+        <div class="item"><span class="sw today"></span>What I'm doing today</div>
+        <div class="item"><span class="sw cover"></span>What coverage delivers</div>
+      </div>
+      <input class="cap" id="caption" value="Self-assessed · representative of one product counsel's coverage" aria-label="caption">
+    </div>
+
+    <div class="panel">
+      <h2>Your read</h2>
+      <p class="hint">Edit any label to make it yours. Drag each slider to the share of attention you actually give it now.</p>
+      <div id="rows"></div>
+      <div class="actions">
+        <button class="ghost" id="reset">Reset</button>
+        <button id="zero">Honest baseline</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot">The bet hiding in "AI for efficiency": automate the answers and product teams self-serve, then route around you. Coverage is the part that does not commoditize. Being the counsel who saw it in the spec, who carries context no tool has, who is in the room before the decision hardens.</p>
+</div>
+
+<script>
+const AXES = [
+  {t:"Watching the frontier",     d:"What's moving in law and the market that will hit our products"},
+  {t:"Knowing the roadmap cold",  d:"What's actually being built across the org"},
+  {t:"Knowing who owns what",     d:"Decision-makers and RACI across product and eng"},
+  {t:"Catching risk early",       d:"Seeing it in the spec before it ships"},
+  {t:"Being known for something", d:"What gets said when teams decide whether to loop me in"},
+  {t:"Walking in prepared",       d:"Having a view before the design review"},
+  {t:"Working the network",       d:"Tending the cross-functional relationships that matter"},
+  {t:"Pulling the function in",   d:"Getting the right governance expertise in front of product"}
+];
+const DEFAULTS = [3,4,3,3,2,4,3,2];
+let vals = DEFAULTS.slice();
+
+const NS="http://www.w3.org/2000/svg";
+const cx=500, cy=350, R=185, N=AXES.length, MAX=10;
+function ang(i){return (-90 + i*(360/N)) * Math.PI/180;}
+function pt(i,v){const r=R*v/MAX; return [cx+r*Math.cos(ang(i)), cy+r*Math.sin(ang(i))];}
+function poly(arr){return arr.map(p=>p.join(",")).join(" ");}
+
+function wrap(str,max){
+  const w=str.split(" ");const out=[];let line="";
+  for(const word of w){
+    if((line+" "+word).trim().length>max){out.push(line.trim());line=word;}
+    else line+=" "+word;
+  }
+  if(line.trim())out.push(line.trim());
+  return out.slice(0,2);
+}
+
+function render(){
+  const svg=document.getElementById("radar");
+  svg.innerHTML="";
+  // rings (octagons)
+  for(let g=1;g<=4;g++){
+    const ring=g*MAX/4;
+    const p=document.createElementNS(NS,"polygon");
+    p.setAttribute("points",poly([...Array(N)].map((_,i)=>pt(i,ring))));
+    p.setAttribute("fill","none");
+    p.setAttribute("stroke", g===4?"#000":"var(--sp-grey-mid)");
+    p.setAttribute("stroke-width", g===4?"1.5":"1");
+    svg.appendChild(p);
+  }
+  // spokes
+  for(let i=0;i<N;i++){
+    const[ x,y]=pt(i,MAX);
+    const l=document.createElementNS(NS,"line");
+    l.setAttribute("x1",cx);l.setAttribute("y1",cy);l.setAttribute("x2",x);l.setAttribute("y2",y);
+    l.setAttribute("stroke","var(--sp-grey-mid)");l.setAttribute("stroke-width","1");
+    svg.appendChild(l);
+  }
+  // coverage octagon (full)
+  const cov=document.createElementNS(NS,"polygon");
+  cov.setAttribute("points",poly([...Array(N)].map((_,i)=>pt(i,MAX))));
+  cov.setAttribute("fill","rgba(255,0,0,0.07)");
+  cov.setAttribute("stroke","var(--sp-red)");
+  cov.setAttribute("stroke-width","2.5");
+  svg.appendChild(cov);
+  // today polygon
+  const tod=document.createElementNS(NS,"polygon");
+  tod.setAttribute("points",poly(vals.map((v,i)=>pt(i,v))));
+  tod.setAttribute("fill","rgba(51,51,51,0.88)");
+  tod.setAttribute("stroke","var(--sp-black)");
+  tod.setAttribute("stroke-width","1.5");
+  svg.appendChild(tod);
+  // today dots
+  vals.forEach((v,i)=>{
+    const[x,y]=pt(i,v);
+    const c=document.createElementNS(NS,"circle");
+    c.setAttribute("cx",x);c.setAttribute("cy",y);c.setAttribute("r","3.5");
+    c.setAttribute("fill","var(--sp-black)");
+    svg.appendChild(c);
+  });
+  // labels
+  AXES.forEach((a,i)=>{
+    const A=ang(i);
+    const lx=cx+(R+26)*Math.cos(A), ly=cy+(R+26)*Math.sin(A);
+    const cos=Math.cos(A);
+    let anchor="middle";
+    if(cos>0.3)anchor="start"; else if(cos<-0.3)anchor="end";
+    const g=document.createElementNS(NS,"text");
+    g.setAttribute("x",lx);g.setAttribute("y",ly);
+    g.setAttribute("text-anchor",anchor);
+    g.setAttribute("font-family","var(--sp-font)");
+    // title
+    const t1=document.createElementNS(NS,"tspan");
+    t1.setAttribute("x",lx);t1.setAttribute("font-weight","700");t1.setAttribute("font-size","14");
+    t1.setAttribute("fill","#000");
+    t1.textContent=a.t;
+    g.appendChild(t1);
+    // descriptor wrapped
+    wrap(a.d,30).forEach((line,k)=>{
+      const ts=document.createElementNS(NS,"tspan");
+      ts.setAttribute("x",lx);ts.setAttribute("dy",k===0?"16":"13");
+      ts.setAttribute("font-weight","300");ts.setAttribute("font-size","10.5");
+      ts.setAttribute("fill","var(--sp-grey-dark)");
+      ts.textContent=line;
+      g.appendChild(ts);
+    });
+    // nudge whole label up a touch so title sits at vertex height
+    g.setAttribute("y", ly - 6);
+    svg.appendChild(g);
+  });
+}
+
+function buildRows(){
+  const host=document.getElementById("rows");
+  host.innerHTML="";
+  AXES.forEach((a,i)=>{
+    const row=document.createElement("div");row.className="row";
+    row.innerHTML=`
+      <div class="lab"><span class="num">${i+1}</span>
+        <input class="titin" data-i="${i}" data-f="t" value="${a.t.replace(/"/g,'&quot;')}"></div>
+      <input class="descin" data-i="${i}" data-f="d" value="${a.d.replace(/"/g,'&quot;')}">
+      <div class="ctl">
+        <input type="range" min="0" max="10" step="1" value="${vals[i]}" data-i="${i}">
+        <span class="val" id="v${i}">${vals[i]}</span>
+      </div>`;
+    host.appendChild(row);
+  });
+  host.querySelectorAll('input[type=range]').forEach(s=>{
+    s.addEventListener('input',e=>{
+      const i=+e.target.dataset.i; vals[i]=+e.target.value;
+      document.getElementById('v'+i).textContent=vals[i]; render();
+    });
+  });
+  host.querySelectorAll('.titin,.descin').forEach(inp=>{
+    inp.addEventListener('input',e=>{
+      const i=+e.target.dataset.i, f=e.target.dataset.f;
+      AXES[i][f]=e.target.value; render();
+    });
+  });
+}
+
+document.getElementById('reset').addEventListener('click',()=>{
+  vals=DEFAULTS.slice(); buildRows(); render();
+});
+document.getElementById('zero').addEventListener('click',()=>{
+  vals=AXES.map(()=>0); buildRows(); render();
+});
+
+buildRows();
+render();
+</script>
+</body>
+</html>

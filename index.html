@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deep Coverage — Product Counsel</title>
+<style>
+  :root{
+    --sp-white:#FFFFFF; --sp-black:#000000;
+    --sp-red:#FF0000; --sp-grey-light:#F5F5F5; --sp-grey-mid:#E0E0E0; --sp-grey-dark:#333333;
+    --sp-font:"Helvetica Neue",Helvetica,Arial,sans-serif; --sp-transition:300ms ease;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--sp-white);color:var(--sp-black);
+    font-family:var(--sp-font);font-weight:300;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1120px;margin:0 auto;padding:36px 28px 64px;}
+
+  .runhead{display:flex;justify-content:space-between;align-items:baseline;font-size:.7rem;
+    font-weight:400;letter-spacing:.06em;text-transform:uppercase;padding-bottom:10px;
+    border-bottom:1px solid var(--sp-black);}
+  .runhead span:last-child{color:var(--sp-grey-dark);}
+
+  nav{display:flex;gap:30px;margin:22px 0 4px;}
+  nav a{font-size:.74rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;
+    cursor:pointer;padding-bottom:5px;border-bottom:2px solid transparent;transition:opacity var(--sp-transition);}
+  nav a:hover{opacity:.7;}
+  nav a.on{border-bottom:2px solid var(--sp-red);}
+
+  .title{margin:14px 0 6px;font-weight:900;line-height:.92;letter-spacing:-.02em;
+    font-size:clamp(2.3rem,7vw,4.4rem);}
+  .sub{font-weight:300;font-size:clamp(1rem,2.2vw,1.25rem);max-width:40ch;line-height:1.25;margin:0 0 28px;}
+
+  .stage{display:grid;grid-template-columns:1.35fr 1fr;gap:0;align-items:start;}
+  @media(max-width:880px){.stage{grid-template-columns:1fr;}}
+  .chartcol{padding-right:24px;}
+  @media(max-width:880px){.chartcol{padding-right:0;}}
+  svg{width:100%;height:auto;display:block;}
+
+  .legend{display:flex;gap:24px;flex-wrap:wrap;margin-top:8px;font-size:.78rem;font-weight:400;}
+  .legend .item{display:flex;align-items:center;gap:9px;}
+  .sw{width:15px;height:15px;display:inline-block;}
+  .sw.today{background:var(--sp-grey-dark);}
+  .sw.cover{background:var(--sp-white);border:2px solid var(--sp-red);}
+  .sw.indiv{background:var(--sp-grey-mid);}
+  .cap{margin-top:13px;font-size:.72rem;font-weight:300;color:var(--sp-grey-dark);font-style:italic;}
+
+  .panel{border-left:1px solid var(--sp-black);padding:4px 0 0 24px;}
+  @media(max-width:880px){.panel{border-left:none;border-top:1px solid var(--sp-black);
+    margin-top:28px;padding:22px 0 0;}}
+  .panel h2{font-size:.7rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;margin:0 0 4px;}
+  .panel .hint{font-size:.78rem;font-weight:300;color:var(--sp-grey-dark);margin:0 0 16px;line-height:1.4;}
+
+  .row{padding:12px 0;border-top:1px solid var(--sp-grey-mid);}
+  .row:first-of-type{border-top:none;}
+  .lab{display:flex;align-items:baseline;gap:8px;}
+  .num{font-weight:900;font-size:.8rem;width:1.3em;flex:none;}
+  .titin{font-weight:400;font-size:.9rem;border:none;background:transparent;width:100%;
+    font-family:var(--sp-font);padding:2px 0;color:var(--sp-black);}
+  .titin:focus{outline:none;border-bottom:1px solid var(--sp-red);}
+  .descin{font-weight:300;font-size:.74rem;color:var(--sp-grey-dark);border:none;background:transparent;
+    width:100%;font-family:var(--sp-font);padding:2px 0 6px 1.3em;}
+  .descin:focus{outline:none;border-bottom:1px solid var(--sp-red);color:var(--sp-black);}
+  .ctl{display:flex;align-items:center;gap:12px;padding-left:1.3em;}
+  input[type=range]{flex:1;accent-color:var(--sp-red);height:2px;}
+  .val{font-weight:900;font-size:.8rem;width:1.4em;text-align:right;}
+
+  .field{font-family:var(--sp-font);font-weight:300;font-size:.85rem;border:1px solid var(--sp-grey-mid);
+    padding:9px 10px;width:100%;background:var(--sp-white);}
+  .field:focus{outline:none;border-color:var(--sp-red);}
+  textarea.field{min-height:120px;resize:vertical;font-size:.78rem;line-height:1.5;}
+  label.flab{display:block;font-size:.7rem;font-weight:400;letter-spacing:.06em;text-transform:uppercase;
+    margin:16px 0 6px;}
+
+  .actions{margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;}
+  button{font-family:var(--sp-font);font-weight:400;font-size:.72rem;letter-spacing:.06em;
+    text-transform:uppercase;background:var(--sp-black);color:var(--sp-white);border:none;
+    padding:11px 16px;cursor:pointer;transition:opacity var(--sp-transition);}
+  button:hover{opacity:.7;}
+  button.ghost{background:var(--sp-white);color:var(--sp-black);border:1px solid var(--sp-black);}
+
+  .code{margin-top:14px;}
+  .codebox{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.72rem;word-break:break-all;
+    background:var(--sp-grey-light);border:1px solid var(--sp-grey-mid);padding:10px;line-height:1.4;}
+
+  .gaps{margin-top:8px;}
+  .gap{display:grid;grid-template-columns:1.3em 1fr auto;gap:8px;align-items:baseline;
+    padding:8px 0;border-top:1px solid var(--sp-grey-mid);font-size:.84rem;}
+  .gap:first-child{border-top:none;}
+  .gap .gn{font-weight:900;font-size:.78rem;}
+  .gap .gv{font-weight:900;}
+  .gap.top .gv{color:var(--sp-red);}
+  .gap .glabel{font-weight:400;}
+  .gap .gbar{grid-column:2 / 4;height:6px;background:var(--sp-grey-mid);margin-top:5px;}
+  .gap .gbar i{display:block;height:6px;background:var(--sp-grey-dark);}
+  .gap.top .gbar i{background:var(--sp-red);}
+  .nreads{font-size:.74rem;font-weight:400;letter-spacing:.05em;text-transform:uppercase;margin:2px 0 0;}
+
+  .hide{display:none;}
+  .foot{margin-top:46px;padding-top:14px;border-top:1px solid var(--sp-black);font-size:.72rem;
+    font-weight:300;color:var(--sp-grey-dark);max-width:64ch;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="runhead"><span>Coverage Diagnostic</span><span>In-House Product Counsel</span></div>
+
+  <nav>
+    <a id="navMine" class="on">My read</a>
+    <a id="navTeam">Team roll-up</a>
+  </nav>
+
+  <!-- ============ INDIVIDUAL ============ -->
+  <section id="viewMine">
+    <h1 class="title">Deep<br>Coverage</h1>
+    <p class="sub">Rate where your attention actually goes today. The red ring is what full coverage would deliver. Then copy your read and send it in.</p>
+
+    <div class="stage">
+      <div class="chartcol">
+        <svg id="svgMine" viewBox="0 0 1000 720" role="img" aria-label="Coverage radar"></svg>
+        <div class="legend">
+          <div class="item"><span class="sw today"></span>What I'm doing today</div>
+          <div class="item"><span class="sw cover"></span>What coverage delivers</div>
+        </div>
+        <p class="cap">Self-assessed. Nothing here is transmitted. Your read travels only when you copy it and send it.</p>
+      </div>
+
+      <div class="panel">
+        <h2>Your read</h2>
+        <p class="hint">Edit any label to fit your org. Drag each slider 0–10.</p>
+        <div id="rows"></div>
+
+        <label class="flab" for="who">Initials (optional)</label>
+        <input id="who" class="field" maxlength="6" placeholder="e.g. KP">
+
+        <div class="actions">
+          <button id="copyRead">Copy my read</button>
+          <button class="ghost" id="dl">Download .json</button>
+          <button class="ghost" id="reset">Reset</button>
+        </div>
+        <div class="code hide" id="codeWrap">
+          <label class="flab">Your read code — paste this into Slack/Teams</label>
+          <div class="codebox" id="codeOut"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ROLL-UP ============ -->
+  <section id="viewTeam" class="hide">
+    <h1 class="title">Team<br>Coverage</h1>
+    <p class="sub">Paste the read codes your team sent you, one per line. Or load their .json files. The picture is built on this machine only.</p>
+
+    <div class="stage">
+      <div class="chartcol">
+        <svg id="svgTeam" viewBox="0 0 1000 720" role="img" aria-label="Team coverage radar"></svg>
+        <div class="legend">
+          <div class="item"><span class="sw indiv"></span>Each person</div>
+          <div class="item"><span class="sw today"></span>Team average</div>
+          <div class="item"><span class="sw cover"></span>What coverage delivers</div>
+        </div>
+        <p class="cap nreads" id="nreads">No reads loaded yet.</p>
+      </div>
+
+      <div class="panel">
+        <h2>Load reads</h2>
+        <p class="hint">One code per line. Invalid lines are skipped.</p>
+        <textarea id="codesIn" class="field" placeholder="DCR1:..."></textarea>
+        <div class="actions">
+          <button id="build">Build the picture</button>
+          <button class="ghost" id="fileBtn">Load .json files</button>
+          <input id="files" type="file" accept=".json,application/json" multiple class="hide">
+        </div>
+        <h2 style="margin-top:30px">Where the team is least covered</h2>
+        <div class="gaps" id="gaps"><p class="hint">Build the picture to see the ranked gaps.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">The bet inside "AI for efficiency": automate the answers, product teams self-serve, then route around you. Coverage is the part that does not commoditize. This tool runs entirely on the machine that opens it — no server, no network calls, no storage. A read only moves when someone chooses to copy it.</p>
+</div>
+
+<script>
+/* ---------- config ---------- */
+const AXES = [
+  {t:"Watching the frontier",     d:"Law and market moves that will hit our products"},
+  {t:"Knowing the roadmap cold",  d:"What's actually being built across the org"},
+  {t:"Knowing who owns what",     d:"Decision-makers and RACI across product and eng"},
+  {t:"Catching risk early",       d:"Seeing it in the spec before it ships"},
+  {t:"Being known for something", d:"What gets said when teams decide to loop me in"},
+  {t:"Walking in prepared",       d:"Having a view before the design review"},
+  {t:"Working the network",       d:"Tending the cross-functional relationships"},
+  {t:"Pulling the function in",   d:"Right governance expertise in front of product"}
+];
+const N = AXES.length, MAX = 10;
+let vals = AXES.map(()=>5);
+let reads = [];                 // [{n, v:[8]}]
+
+/* ---------- geometry ---------- */
+const NS="http://www.w3.org/2000/svg";
+const cx=500, cy=350, R=185;
+const ang=i=>(-90 + i*(360/N))*Math.PI/180;
+const pt=(i,v)=>{const r=R*v/MAX;return [cx+r*Math.cos(ang(i)), cy+r*Math.sin(ang(i))];};
+const poly=a=>a.map(p=>p.join(",")).join(" ");
+function wrap(s,m){const w=s.split(" "),o=[];let l="";for(const x of w){
+  if((l+" "+x).trim().length>m){o.push(l.trim());l=x;}else l+=" "+x;}
+  if(l.trim())o.push(l.trim());return o.slice(0,2);}
+
+function mk(tag,attrs){const e=document.createElementNS(NS,tag);
+  for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
+
+function scaffold(svg){
+  svg.innerHTML="";
+  for(let g=1;g<=4;g++){
+    svg.appendChild(mk("polygon",{points:poly([...Array(N)].map((_,i)=>pt(i,g*MAX/4))),
+      fill:"none",stroke:g===4?"#000":"var(--sp-grey-mid)","stroke-width":g===4?"1.5":"1"}));
+  }
+  for(let i=0;i<N;i++){const[x,y]=pt(i,MAX);
+    svg.appendChild(mk("line",{x1:cx,y1:cy,x2:x,y2:y,stroke:"var(--sp-grey-mid)","stroke-width":"1"}));}
+  svg.appendChild(mk("polygon",{points:poly([...Array(N)].map((_,i)=>pt(i,MAX))),
+    fill:"rgba(255,0,0,0.07)",stroke:"var(--sp-red)","stroke-width":"2.5"}));
+  AXES.forEach((a,i)=>{
+    const A=ang(i), lx=cx+(R+26)*Math.cos(A), ly=cy+(R+26)*Math.sin(A)-6, cos=Math.cos(A);
+    let anc="middle"; if(cos>0.3)anc="start"; else if(cos<-0.3)anc="end";
+    const t=mk("text",{x:lx,y:ly,"text-anchor":anc,"font-family":"var(--sp-font)"});
+    const t1=mk("tspan",{x:lx,"font-weight":"700","font-size":"14",fill:"#000"});t1.textContent=a.t;t.appendChild(t1);
+    wrap(a.d,30).forEach((ln,k)=>{const ts=mk("tspan",{x:lx,dy:k===0?"16":"13","font-weight":"300",
+      "font-size":"10.5",fill:"var(--sp-grey-dark)"});ts.textContent=ln;t.appendChild(ts);});
+    svg.appendChild(t);
+  });
+}
+function drawShape(svg,v,o){
+  svg.appendChild(mk("polygon",{points:poly(v.map((x,i)=>pt(i,x))),
+    fill:o.fill||"none",stroke:o.stroke,"stroke-width":o.w||"1.5",
+    "stroke-opacity":o.so||"1","fill-opacity":o.fo||"1"}));
+  if(o.dots)v.forEach((x,i)=>{const[px,py]=pt(i,x);
+    svg.appendChild(mk("circle",{cx:px,cy:py,r:"3.5",fill:o.stroke}));});
+}
+
+/* ---------- individual ---------- */
+function renderMine(){
+  const svg=document.getElementById("svgMine");
+  scaffold(svg);
+  drawShape(svg,vals,{fill:"rgba(51,51,51,0.88)",stroke:"#000",w:"1.5",dots:true});
+}
+function buildRows(){
+  const host=document.getElementById("rows");host.innerHTML="";
+  AXES.forEach((a,i)=>{
+    const row=document.createElement("div");row.className="row";
+    row.innerHTML=`<div class="lab"><span class="num">${i+1}</span>
+      <input class="titin" data-i="${i}" data-f="t" value="${a.t.replace(/"/g,'&quot;')}"></div>
+      <input class="descin" data-i="${i}" data-f="d" value="${a.d.replace(/"/g,'&quot;')}">
+      <div class="ctl"><input type="range" min="0" max="10" step="1" value="${vals[i]}" data-i="${i}">
+      <span class="val" id="v${i}">${vals[i]}</span></div>`;
+    host.appendChild(row);
+  });
+  host.querySelectorAll('input[type=range]').forEach(s=>s.addEventListener('input',e=>{
+    const i=+e.target.dataset.i;vals[i]=+e.target.value;
+    document.getElementById('v'+i).textContent=vals[i];renderMine();}));
+  host.querySelectorAll('.titin,.descin').forEach(inp=>inp.addEventListener('input',e=>{
+    AXES[+e.target.dataset.i][e.target.dataset.f]=e.target.value;renderMine();}));
+}
+function encodeRead(){
+  const payload={n:(document.getElementById('who').value||"").slice(0,6),v:vals.slice()};
+  return "DCR1:"+btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+}
+document.getElementById('copyRead').addEventListener('click',()=>{
+  const code=encodeRead();
+  document.getElementById('codeOut').textContent=code;
+  document.getElementById('codeWrap').classList.remove('hide');
+  if(navigator.clipboard) navigator.clipboard.writeText(code).catch(()=>{});
+});
+document.getElementById('dl').addEventListener('click',()=>{
+  const payload={n:(document.getElementById('who').value||"").slice(0,6),v:vals.slice()};
+  const blob=new Blob([JSON.stringify(payload)],{type:"application/json"});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download="coverage-read-"+(payload.n||"anon")+".json";a.click();
+});
+document.getElementById('reset').addEventListener('click',()=>{vals=AXES.map(()=>5);buildRows();renderMine();});
+
+/* ---------- decode ---------- */
+function decodeOne(line){
+  line=line.trim();if(!line)return null;
+  try{
+    if(line.startsWith("DCR1:"))line=line.slice(5);
+    let json;
+    try{json=decodeURIComponent(escape(atob(line)));}catch(_){json=line;} // accept raw json too
+    const o=JSON.parse(json);
+    if(!Array.isArray(o.v)||o.v.length!==N)return null;
+    const v=o.v.map(x=>Math.max(0,Math.min(MAX,Math.round(+x||0))));
+    return {n:(o.n||"").toString().slice(0,6),v};
+  }catch(_){return null;}
+}
+
+/* ---------- roll-up ---------- */
+function renderTeam(){
+  const svg=document.getElementById("svgTeam");
+  scaffold(svg);
+  reads.forEach(r=>drawShape(svg,r.v,{stroke:"var(--sp-grey-mid)",w:"1.25",so:"0.9"}));
+  const nr=reads.length;
+  const nreadsEl=document.getElementById('nreads');
+  if(!nr){nreadsEl.textContent="No reads loaded yet.";
+    document.getElementById('gaps').innerHTML='<p class="hint">Build the picture to see the ranked gaps.</p>';return;}
+  const avg=[...Array(N)].map((_,i)=>reads.reduce((s,r)=>s+r.v[i],0)/nr);
+  drawShape(svg,avg,{fill:"rgba(51,51,51,0.82)",stroke:"#000",w:"1.5",dots:true});
+  const names=reads.map(r=>r.n).filter(Boolean);
+  nreadsEl.textContent="n = "+nr+" read"+(nr>1?"s":"")+(names.length?" · "+names.join(", "):"");
+  // gaps
+  const ranked=avg.map((a,i)=>({i,a,gap:MAX-a})).sort((x,y)=>y.gap-x.gap);
+  const host=document.getElementById('gaps');host.innerHTML="";
+  ranked.forEach((g,rank)=>{
+    const top=rank<3;
+    const d=document.createElement('div');d.className="gap"+(top?" top":"");
+    d.innerHTML=`<span class="gn">${g.i+1}</span>
+      <span class="glabel">${AXES[g.i].t}</span>
+      <span class="gv">${g.a.toFixed(1)}</span>
+      <div class="gbar"><i style="width:${g.a/MAX*100}%"></i></div>`;
+    host.appendChild(d);
+  });
+}
+function loadCodes(){
+  const lines=document.getElementById('codesIn').value.split(/\r?\n/);
+  reads=lines.map(decodeOne).filter(Boolean);
+  renderTeam();
+}
+document.getElementById('build').addEventListener('click',loadCodes);
+document.getElementById('fileBtn').addEventListener('click',()=>document.getElementById('files').click());
+document.getElementById('files').addEventListener('change',e=>{
+  const fs=[...e.target.files];let pending=fs.length;
+  fs.forEach(f=>{const rd=new FileReader();rd.onload=()=>{
+    const r=decodeOne(rd.result);if(r)reads.push(r);
+    if(--pending===0)renderTeam();};rd.readAsText(f);});
+});
+
+/* ---------- nav ---------- */
+function show(which){
+  const mine=which==='mine';
+  document.getElementById('viewMine').classList.toggle('hide',!mine);
+  document.getElementById('viewTeam').classList.toggle('hide',mine);
+  document.getElementById('navMine').classList.toggle('on',mine);
+  document.getElementById('navTeam').classList.toggle('on',!mine);
+  if(mine)renderMine(); else renderTeam();
+}
+document.getElementById('navMine').addEventListener('click',()=>show('mine'));
+document.getElementById('navTeam').addEventListener('click',()=>show('team'));
+
+/* ---------- init ---------- */
+buildRows();
+renderMine();
+</script>
+</body>
+</html>
